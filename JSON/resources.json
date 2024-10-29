@@ -1,0 +1,38 @@
+{
+      "oak_wood" : {
+            "id" : 1,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "oak wood"
+      },
+      "oak_plank" : {
+            "id" : 2,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "oak plank"
+      },
+      "stick" : {
+            "id" : 3,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "stick"
+      },
+      "cobblestone" : {
+            "id" : 4,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "cobblestone"
+      },
+      "oak_sapling" : {
+            "id" : 5,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "oak sapling"
+      },
+      "apple" : {
+            "id" : 6,
+            "count" : 0,
+            "stack" : 64,
+            "name" : "apple"
+      }
+}

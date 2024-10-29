@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta iconshort="">
+  <link rel="stylesheet" href="Style\style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.css"> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.11.0/toastify.min.js"></script> 
+  <title>Foretale v1.0.0.1</title>
+</head>
+
+<body>
+  <div class="game">
+      
+    <div class="tooltip" style="display: none;"></div>
+    <div class="menu">
+      <button class="btnInventory" id="inventory" onclick="inventoryOpen()">
+        <div class="inventory">inventory</div>
+      </button>
+      <button class="btnWorkbench" id="workbench" onclick="workbenchOpen()">
+        <div class="workbench">workbench</div>
+      </button>
+      <button class="btnMap" id="map" onclick="mapOpen()">
+        <div class="map">map</div>
+      </button>
+      <button class="btnDig" id="dig" onclick="digOpen()">
+        <div class="dig">dig</div>
+      </button>
+      <button class="btnSettings" id="Settings" onclick="settingsOpen()">
+        <div class="settings">settings</div>
+      </button>
+      <button class="btnClose" id="close" onclick="closeALlWindows()">
+        <div class="dig">X</div>
+      </button>
+    </div>
+    <div class="windows">
+
+      <div class="inventoryWin"></div>
+
+      <div class="workbenchWin"></div>
+
+      <div class="mapWin"></div>
+
+      <div class="digWin"></div>
+
+      <div class="settingsWin">
+        <div id="musicPlayer">
+          <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        <audio id="audio" src="barradeen-boku-no-love.mp3" autoplay loop></audio>
+      </div>
+    </div>
+  </div>
+  <div id="gameBoard">
+
+  </div>
+  <script src="JavaScript\Script\script.js"></script>
+  <script src="JavaScript\Player\inventory.js" type="module"></script>
+  <script src="JavaScript\Workbench\craft.js" type="module"></script>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const volumeSlider = document.getElementById("volume");
+
+    window.onload = function () {};
+
+    volumeSlider.addEventListener("input", () => {
+      audio.volume = volumeSlider.value;
+    });
+  </script>
+</body>
+
+</html>

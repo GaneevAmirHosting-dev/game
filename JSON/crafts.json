@@ -1,0 +1,17 @@
+{
+      "crafts": [
+        {
+          "name": "oak plank",
+          "ingredients": [
+            {
+              "name": "oak wood",
+              "count": 1
+            }
+          ],
+          "result": {
+            "name": "oak plank",
+            "count": 4
+          }
+        }
+      ]
+}
