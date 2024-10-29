@@ -1,8 +1,8 @@
-let resources = []; // Массив для хранения всех ресурсов
+let resources = {}; // Объект для хранения всех ресурсов
 
 // Загрузка инвентаря
 const loadInventory = () => {
-  return fetch('../../JSON/inventory.json')
+  return fetch('http://localhost:3000/api/inventory')
     .then(response => response.json())
     .then(data => {
       return { inventory: data.inventory };
@@ -11,43 +11,53 @@ const loadInventory = () => {
 
 // Загрузка ресурсов
 const loadResources = () => {
-  return fetch('../../JSON/resources.json')
+  return fetch('http://localhost:3000/api/resources')
     .then(response => response.json())
     .then(data => {
-      // Переводим ресурсы в массив
-      resources = Object.values(data); 
+      resources = data; // Сохраняем ресурсы в виде объекта
       return { resources: resources };
     });
 };
 
 // Добавление нового ресурса в инвентарь
-const newItem = (itemName, count) => {
-  const resource = resources.find(item => item.name === itemName); 
-  if (resource) {
-    return fetch('../../JSON/inventory.json')
-      .then(response => response.json())
+const newItem = (itemKey, count) => {
+  if (resources[itemKey]) {
+    return loadInventory()
       .then(data => {
         const inventory = data.inventory;
-        const existingItem = inventory.find(item => item.name === itemName);
+        const existingItem = inventory.find(item => item.key === itemKey);
 
         if (existingItem) {
+          // Если предмет уже существует, обновляем его количество
           existingItem.count += count;
+          return fetch('http://localhost:3000/api/inventory', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ inventory: inventory })
+          });
         } else {
-          inventory.push({ name: itemName, count: count, stack: resource.stack }); 
+          // Если предмет не существует, добавляем его в инвентарь
+          inventory.push({ 
+            key: itemKey, 
+            count: count, 
+            stack: resources[itemKey].stack,
+            name: resources[itemKey].name
+          });
+          return fetch('http://localhost:3000/api/inventory', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ inventory: inventory })
+          });
         }
-
-        return fetch('../../JSON/inventory.json', {
-          method: 'PUT', 
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ inventory: inventory }) 
-        });
       })
       .then(response => {
         if (response.ok) {
           console.log('Инвентарь сохранен!');
-          updateInventoryDisplay(); 
+          return updateInventoryDisplay();
         } else {
           console.error('Ошибка при сохранении инвентаря.');
         }
@@ -56,27 +66,38 @@ const newItem = (itemName, count) => {
         console.error('Ошибка при сохранении инвентаря:', error);
       });
   } else {
-    console.error(`Ресурс "${itemName}" не найден в списке ресурсов.`);
+    console.error(`Ресурс с ключом "${itemKey}" не найден в списке ресурсов.`);
   }
 };
 
 // Удаление ресурса из инвентаря
-const removeItem = (itemName, count) => {
+const removeItem = (itemKey, count) => {
   return loadInventory()
     .then(data => {
       const inventory = data.inventory;
-      const itemIndex = inventory.findIndex(item => item.name === itemName);
+      const itemIndex = inventory.findIndex(item => item.key === itemKey);
       if (itemIndex !== -1) {
         const item = inventory[itemIndex];
         if (item.count >= count) {
           item.count -= count;
           if (item.count === 0) {
-            inventory.splice(itemIndex, 1); 
+            inventory.splice(itemIndex, 1);
           }
-          saveInventory(inventory); 
-          updateInventoryDisplay();
-          return true;
+          return fetch('http://localhost:3000/api/inventory', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ inventory: inventory })
+          });
         }
+      }
+      return false;
+    })
+    .then(response => {
+      if (response && response.ok) {
+        updateInventoryDisplay();
+        return true;
       }
       return false;
     });
@@ -88,65 +109,15 @@ const updateInventoryDisplay = () => {
     .then(data => {
       const inventoryContainer = document.querySelector(".inventoryWin");
       inventoryContainer.innerHTML = "";
-      data.inventory.forEach((item, index) => {
+      data.inventory.forEach((item) => {
         const cell = document.createElement("cell");
         cell.innerHTML = `
-            <span class="item-name">${item.name}</span>
-            <span class="item-count">${item.count} / ${item.stack}</span>
+          <span class="item-name">${item.name}</span>
+          <span class="item-count">${item.count} / ${item.stack}</span>
         `;
         inventoryContainer.appendChild(cell);
       });
     });
-};
-
-// Сохранение инвентаря
-const saveInventory = (inventory) => {
-  fetch('../../JSON/inventory.json', {
-    method: 'PUT', 
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ inventory: inventory }) 
-  })
-    .then(response => {
-      if (response.ok) {
-        console.log('Инвентарь сохранен!');
-      } else {
-        console.error('Ошибка при сохранении инвентаря.');
-      }
-    })
-    .catch(error => {
-      console.error('Ошибка при сохранении инвентаря:', error);
-    });
-};
-
-// Изменение максимального размера инвентаря
-const changeMaxInventorySize = (newSize) => {
-  if (newSize >= 1 && newSize <= 3200) { // Установка разумных ограничений
-    maxInventorySlots = newSize;
-    // Если новый размер меньше текущего инвентаря, удаляем предметы
-    if (newSize < inventory.length) {
-      inventory.splice(newSize, inventory.length - newSize); 
-    }
-    saveInventory();
-    updateInventoryDisplay();
-  }
-};
-
-const showInventoryFullNotification = () => {
-  const now = Date.now();
-  if (now - lastNotificationTime >= 1000) { 
-    lastNotificationTime = now;
-    Toastify({
-      text: "ваш инвентарь заполнен, просим вас очистить его",
-      duration: 4000,
-      gravity: "top",
-      position: "center",
-      className: "toast-success", //  Добавляем  класс  для  стилей  по  умолчанию
-      stopOnFocus: true,
-      progress: false //  Включаем  прогресс-бар
-    }).showToast(); 
-  }
 };
 
 // Экспорт функций
@@ -155,13 +126,5 @@ export {
   loadInventory, 
   newItem, 
   removeItem, 
-  updateInventoryDisplay, 
-  changeMaxInventorySize 
+  updateInventoryDisplay 
 };
-
-// Инициализация при загрузке
-loadResources()
-  .then(() => {
-    //  Теперь  вы  можете  использовать  `newItem()`  или  `resources`
-    newItem("oak_wood", 100); 
-  });

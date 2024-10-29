@@ -31,6 +31,9 @@
       <button class="btnSettings" id="Settings" onclick="settingsOpen()">
         <div class="settings">settings</div>
       </button>
+      <button class="btnCheat" id="cheat" onclick="cheatMenuOpen()">
+        <div class="cheat">cheat menu</div>
+      </button>
       <button class="btnClose" id="close" onclick="closeALlWindows()">
         <div class="dig">X</div>
       </button>
@@ -43,7 +46,23 @@
 
       <div class="mapWin"></div>
 
-      <div class="digWin"></div>
+      <div class="digWin">
+        <button onclick="collectWood()">Добыть дерево</button>
+      </div>
+
+<div class="cheatMenu">
+            <h3>Добавить предметы</h3>
+            <select id="itemSelect">
+                <option value="oak_wood">Oak Wood</option>
+                <option value="oak_plank">Oak Plank</option>
+                <option value="stick">Stick</option>
+                <option value="cobblestone">Cobblestone</option>
+                <option value="oak_sapling">Oak Sapling</option>
+                <option value="apple">Apple</option>
+            </select>
+            <input type="number" id="itemCount" min="1" max="64" value="1">
+            <button onclick="addSelectedItem()">Добавить</button>
+        </div>
 
       <div class="settingsWin">
         <div id="musicPlayer">
@@ -56,11 +75,14 @@
   <div id="gameBoard">
 
   </div>
-  <script src="JavaScript\Script\script.js"></script>
+  <script src="JavaScript\Script\script.js" type="module"></script>
   <script src="JavaScript\Player\inventory.js" type="module"></script>
   <script src="JavaScript\Workbench\craft.js" type="module"></script>
-
+  <script src="JavaScript/Script/dig.js" type="module"></script>
   <script>
+
+
+
     const audio = document.getElementById("audio");
     const volumeSlider = document.getElementById("volume");
 

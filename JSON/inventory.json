@@ -1,3 +1,14 @@
 {
-  "inventory": []
+  "inventory": [
+    {
+      "name": "oak plank",
+      "count": 36,
+      "stack": 64
+    },
+    {
+      "name": "oak wood",
+      "count": 221,
+      "stack": 64
+    }
+  ]
 }

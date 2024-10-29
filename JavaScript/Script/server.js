@@ -9,8 +9,8 @@ app.use(cors());
 app.use(express.json());
 
 // Путь к JSON файлам
-const inventoryPath = path.join(__dirname, 'JSON', 'inventory.json');
-const resourcesPath = path.join(__dirname, 'JSON', 'resources.json');
+const inventoryPath = path.join(__dirname, '../../JSON/inventory.json');
+const resourcesPath = path.join(__dirname, '../../JSON/resources.json');
 
 // Получение инвентаря
 app.get('/api/inventory', async (req, res) => {
@@ -35,7 +35,7 @@ app.get('/api/resources', async (req, res) => {
 });
 
 // Обновление инвентаря
-app.post('/api/inventory', async (req, res) => {
+app.put('/api/inventory', async (req, res) => {
   try {
     await fs.writeFile(inventoryPath, JSON.stringify(req.body, null, 2));
     res.json({ success: true });

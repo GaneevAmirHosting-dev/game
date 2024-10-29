@@ -4,12 +4,12 @@
           "name": "oak plank",
           "ingredients": [
             {
-              "name": "oak wood",
+              "name": "oak_wood",
               "count": 1
             }
           ],
           "result": {
-            "name": "oak plank",
+            "name": "oak_plank",
             "count": 4
           }
         }

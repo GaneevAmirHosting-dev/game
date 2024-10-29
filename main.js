@@ -1,0 +1,1 @@
+import { newItem } from './inventory.js';
